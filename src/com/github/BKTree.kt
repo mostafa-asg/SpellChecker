@@ -42,8 +42,13 @@ class BKTree( private val distanceFunc : (String,String) -> Int ) {
 
     fun getSpellSuggestion( word: String , tolerance : Int = 1 ) : List<String> {
 
-        if( root != null )
-            return getSpellSuggestion( root!! , word , tolerance )
+        if( root != null ) {
+            val suggestion = getSpellSuggestion(root!!, word.decapitalize(), tolerance)
+            if( suggestion.size == 1 && suggestion[0].decapitalize().equals(word) )
+                return listOf()
+            else
+                return suggestion
+        }
 
         return listOf()
 
@@ -56,7 +61,7 @@ class BKTree( private val distanceFunc : (String,String) -> Int ) {
 
         //the word has spelt correctly
         if( distance == 0 ){
-            return listOf()
+            return listOf(word)
         }
 
         if( distance <= tolerance )
@@ -65,13 +70,26 @@ class BKTree( private val distanceFunc : (String,String) -> Int ) {
         // iterate over the children having tolerance in range (distance-tolerance , distance+tolerance)
         val start = if ((distance-tolerance) < 0) 1 else distance-tolerance
         val end = distance+tolerance
+
+        var find = false
         for( dist in start..end ){
 
             node.children[dist]?.let {
                 val similarWordResult = getSpellSuggestion( it , word , tolerance )
-                for( similarWord in similarWordResult )
-                    result.add(similarWord)
+
+                if( similarWordResult.size == 1 && similarWordResult[0].decapitalize().equals(word) ) {
+                    result.clear()
+                    result.add(similarWordResult[0])
+                    find = true
+                }
+                else {
+                    for (similarWord in similarWordResult)
+                        result.add(similarWord)
+                }
             }
+
+            if(find)
+                break
 
         }
 
