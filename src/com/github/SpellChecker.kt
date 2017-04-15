@@ -67,6 +67,8 @@ class SpellChecker private constructor(private val words : Collection<String> ,
 
     }
 
+    val totalWords: Int get() = wordsList.size
+
     fun suggest(misspellWord : String , tolerance : Int = 1) : List<String> {
 
         return bkTree.getSpellSuggestion( misspellWord , tolerance )
