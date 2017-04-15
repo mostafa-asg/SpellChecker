@@ -1,5 +1,8 @@
 package com.github
 
+import java.io.BufferedReader
+import java.io.FileReader
+
 /**
  *
  * @author Mostafa Asgari
@@ -18,6 +21,21 @@ class SpellChecker private constructor(private val words : Collection<String> ,
 
             for( word in words )
                 wordsList.add( word )
+
+            return this
+        }
+
+        fun loadFromFile( filename : String ) : Builder {
+
+            val reader = BufferedReader(FileReader(filename))
+
+            while (true) {
+
+                val word = reader.readLine() ?: break
+
+                wordsList.add( word )
+
+            }
 
             return this
         }
